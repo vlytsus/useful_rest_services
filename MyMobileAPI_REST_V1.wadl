@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://wadl.dev.java.net/2009/02" xmlns:tns="https://rest.smsportal.com/schemas">
+  <doc title="MyMobileAPI REST V1" xml:lang="en" />
+  <grammars>
+    <xs:schema xmlns:tns="https://rest.smsportal.com/schemas" targetNamespace="https://rest.smsportal.com/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="TokenDto" type="tns:TokenDto" />
+      <xs:element name="BalanceResponse" type="tns:BalanceResponse" />
+      <xs:element name="SendRequest" type="tns:SendRequest" />
+      <xs:element name="SendOptionsDto" type="tns:SendOptionsDto" />
+      <xs:element name="MessageDto" type="tns:MessageDto" />
+      <xs:element name="SendResponse" type="tns:SendResponse" />
+      <xs:element name="CostLineItemDto" type="tns:CostLineItemDto" />
+      <xs:element name="FaultReportDto" type="tns:FaultReportDto" />
+      <xs:element name="MessageFaultDto" type="tns:MessageFaultDto" />
+      <xs:element name="GroupSendRequest" type="tns:GroupSendRequest" />
+      <xs:complexType name="TokenDto">
+        <xs:annotation>
+          <xs:documentation>Contains an authentication token which provides access to various API functions</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="token">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>A string representation of the authentication token. Calls to API functions that require a token should usethis value</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="schema">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The schema of the authentication token. For example JWT (JSON web token)</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="expiresInMinutes">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The number of minutes after which the authentication token will expire</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:integer" />
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="BalanceResponse">
+        <xs:annotation>
+          <xs:documentation>A response to a balance request containing the balance of an account</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="balance">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The number of credits the account has</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:double" />
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="SendRequest">
+        <xs:annotation>
+          <xs:documentation>A request to send a batch of SMS messages</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="0" name="sendOptions" type="tns:SendOptionsDto">
+            <xs:annotation>
+              <xs:documentation>A number of optional settings for a send</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="messages" type="tns:MessageDto">
+            <xs:annotation>
+              <xs:documentation>The SMS message(s) that should be send. Must contain at least one message and at most 100 messages</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="SendOptionsDto">
+        <xs:annotation>
+          <xs:documentation>A number of optional settings for a send</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="0" name="senderId">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The sender ID (source address) to use when sending the messages specified. Maximum length is 11 characters.Please note that a best effort is made to use the value specified but availability is ultimatelydetermined by the mobile network operator</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="0" name="duplicateCheck">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The type of duplication check to use (Defaults to 'None')</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="0" name="startDeliveryUtc" type="xs:dateTime">
+            <xs:annotation>
+              <xs:documentation>The date and time in UTC when the messages should be sent. Maximum date and timeallowed is 3 months from the current date and time</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="endDeliveryUtc" type="xs:dateTime">
+            <xs:annotation>
+              <xs:documentation>This value should be set in UTC if delivery should be staggered over a period of time. Leave null if all messagesshould be sent as soon as possible. Value, if set, must be greater than StartDeliveryUtc</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="replyRuleSetName">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The name of the reply rule set that should be used for the send. Replies that are received as a result ofthe send are then subject to rules configured in the reply rule set governing auto forwards and autoresponses</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="0" name="campaignName">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>A user defined value for the name of the campaign associated with this send. Only used by the system forreporting purposes. Maximum value is 100 characters</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="0" name="costCentre">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>A user defined value for the name of the cost center associated with this send. Only used by the system forreporting purposes. Maximum value is 100 characters</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="0" name="checkOptOuts" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>True if SMS messages should not be sent to mobile subscribers that have opted-out as a result of a previoussend; otherwise false</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="shortenUrls" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>True if this send should try shorten and track urls otherwise false.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="validityPeriod">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The amount of time in hours an SMS should remain valid. The network will continue to try to deliver the SMS over the validity period.</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:integer" />
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="MessageDto">
+        <xs:annotation>
+          <xs:documentation>A SMS message to a mobile subscriber</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="content">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The text content of the SMS message</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="destination">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The MSISDN (mobile number) to whom the message is intended</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="0" name="customerId">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>A user defined ID which can be used to correlate messages sent to the API and receipts or replies received forthat message. Maximum length 100 characters</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="SendResponse">
+        <xs:annotation>
+          <xs:documentation>A response to a send request or a group send request</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="cost">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The total cost of the send excluding any VAT, GST or tax</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:double" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="remainingBalance">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The remaining balance after the Cost has been deducted for the send</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:double" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="eventId">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The system generated ID for this send or batch of messages</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:long" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="sample">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>A sample message that was generated for the send. Purely informational</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="costBreakdown" type="tns:CostLineItemDto">
+            <xs:annotation>
+              <xs:documentation>The break down of the costs for the send grouped by mobile network and feature</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="messages">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The total number of messages that were successfully enqueued for delivery. Long messages may requiremultiple SMS messages or parts to send a message and this is reflected in the Parts value</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:integer" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="parts">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The total number of SMS messages that were successfully enqueued for delivery.</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:integer" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="errorReport" type="tns:FaultReportDto" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CostLineItemDto">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="quantity">
+            <xs:simpleType>
+              <xs:restriction base="xs:long" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="cost">
+            <xs:simpleType>
+              <xs:restriction base="xs:double" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="network">
+            <xs:simpleType>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="FaultReportDto">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="noNetwork">
+            <xs:simpleType>
+              <xs:restriction base="xs:integer" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="duplicates">
+            <xs:simpleType>
+              <xs:restriction base="xs:integer" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="optedOuts">
+            <xs:simpleType>
+              <xs:restriction base="xs:integer" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="faults" type="tns:MessageFaultDto" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="MessageFaultDto">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="rawDestination">
+            <xs:simpleType>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="scrubbedDestination">
+            <xs:simpleType>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="customerId">
+            <xs:simpleType>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="errorMessage">
+            <xs:simpleType>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" name="status">
+            <xs:simpleType>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="GroupSendRequest">
+        <xs:annotation>
+          <xs:documentation>A request to send SMS messages using the group(s)</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="0" name="sendOptions" type="tns:SendOptionsDto">
+            <xs:annotation>
+              <xs:documentation>A number of optional settings for a send</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="1" name="message">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The content of the SMS message that should be sent</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="groups">
+            <xs:simpleType>
+              <xs:annotation>
+                <xs:documentation>The names of the groups that contacts should belong to. These contacts will be the recipients ofthe SMS message. Should contain at least one group name</xs:documentation>
+              </xs:annotation>
+              <xs:restriction base="xs:string" />
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </grammars>
+  <resources base="https://rest.smsportal.com">
+    <resource id="_v1Authentication" path="/v1/Authentication">
+      <method id="AuthenticationV1_Get" name="GET">
+        <doc title="AuthenticationV1_Get" xml:lang="en">Generate an authentication token</doc>
+        <request>
+          <param name="Authorization" style="header" type="xsd:string" default="" required="true">
+            <doc title="Authorization" xml:lang="en">Basic Base64 encoded Authorization Header with your Client Id and Secret</doc>
+          </param>
+        </request>
+        <response status="200">
+          <doc title="200" xml:lang="en">OK</doc>
+          <representation element="tns:TokenDto" mediaType="application/json" />
+        </response>
+        <response status="400">
+          <doc title="400" xml:lang="en">Bad Request</doc>
+        </response>
+        <response status="401">
+          <doc title="401" xml:lang="en">Unauthorized</doc>
+        </response>
+        <response status="500">
+          <doc title="500" xml:lang="en">Internal Server Error</doc>
+        </response>
+        <response status="503">
+          <doc title="503" xml:lang="en">Service Unavailable</doc>
+        </response>
+      </method>
+    </resource>
+    <resource id="_v1Balance" path="/v1/Balance">
+      <method id="BalanceV1_Get" name="GET">
+        <doc title="BalanceV1_Get" xml:lang="en">Retrieve the balance for an account</doc>
+        <request>
+          <param name="Authorization" style="header" type="xsd:string" default="" required="true">
+            <doc title="Authorization" xml:lang="en">Bearer Authorization Header with your generated token</doc>
+          </param>
+        </request>
+        <response status="200">
+          <doc title="200" xml:lang="en">OK</doc>
+          <representation element="tns:BalanceResponse" mediaType="application/json" />
+        </response>
+        <response status="400">
+          <doc title="400" xml:lang="en">Bad Request</doc>
+        </response>
+        <response status="401">
+          <doc title="401" xml:lang="en">Unauthorized</doc>
+        </response>
+        <response status="500">
+          <doc title="500" xml:lang="en">Internal Server Error</doc>
+        </response>
+        <response status="503">
+          <doc title="503" xml:lang="en">Service Unavailable</doc>
+        </response>
+      </method>
+    </resource>
+    <resource id="_v1BulkMessages" path="/v1/BulkMessages">
+      <method id="BulkMessagesV1_Post" name="POST">
+        <doc title="BulkMessagesV1_Post" xml:lang="en">Send one or more messages</doc>
+        <request>
+          <param name="Authorization" style="header" type="xsd:string" default="" required="true">
+            <doc title="Authorization" xml:lang="en">Bearer Authorization Header with your generated token</doc>
+          </param>
+          <representation element="tns:SendRequest" mediaType="application/json" />
+        </request>
+        <response status="200">
+          <doc title="200" xml:lang="en">OK</doc>
+          <representation element="tns:SendResponse" mediaType="application/json" />
+        </response>
+        <response status="400">
+          <doc title="400" xml:lang="en">Bad Request</doc>
+        </response>
+        <response status="401">
+          <doc title="401" xml:lang="en">Unauthorized</doc>
+        </response>
+        <response status="500">
+          <doc title="500" xml:lang="en">Internal Server Error</doc>
+        </response>
+        <response status="503">
+          <doc title="503" xml:lang="en">Service Unavailable</doc>
+        </response>
+      </method>
+    </resource>
+    <resource id="_v1GroupMessages" path="/v1/GroupMessages">
+      <method id="GroupMessagesV1_Post" name="POST">
+        <doc title="GroupMessagesV1_Post" xml:lang="en">Sends a message to contacts in the group</doc>
+        <request>
+          <param name="Authorization" style="header" type="xsd:string" default="" required="true">
+            <doc title="Authorization" xml:lang="en">Bearer Authorization Header with your generated token</doc>
+          </param>
+          <representation element="tns:GroupSendRequest" mediaType="application/json" />
+        </request>
+        <response status="200">
+          <doc title="200" xml:lang="en">OK</doc>
+          <representation element="tns:SendResponse" mediaType="application/json" />
+        </response>
+        <response status="400">
+          <doc title="400" xml:lang="en">Bad Request</doc>
+        </response>
+        <response status="401">
+          <doc title="401" xml:lang="en">Unauthorized</doc>
+        </response>
+        <response status="500">
+          <doc title="500" xml:lang="en">Internal Server Error</doc>
+        </response>
+        <response status="503">
+          <doc title="503" xml:lang="en">Service Unavailable</doc>
+        </response>
+      </method>
+    </resource>
+  </resources>
+</application>
