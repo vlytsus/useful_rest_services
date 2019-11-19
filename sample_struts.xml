@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml-stylesheet type="text/xsl" href="strutsBasicMapping.xslt"?>
+<struts>
+    <constant name="struts.devMode" value="true"  />
+    <package name="basicstruts" extends="struts-default">
+        <action name="index" class="com.example.ActionExample">
+            <result name="success">/index.jsp</result>
+			<result name="validation_error">/index.jsp</result>
+			<result name="error">/index.jsp</result>
+        </action>
+		<action name="login" class="com.example.ActionLogin">
+            <result name="success">/loggedIn.jsp</result>			
+			<result name="error">/index.jsp</result>
+        </action>
+    </package>
+</struts>
