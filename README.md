@@ -5,4 +5,4 @@ Sometime you need WADL buth there is only Swagger YAML presented. So I'll keep h
 
 * WADL for smsportal.com V1 API:  [MyMobileAPI_smsportal_REST_V1.wadl](https://github.com/vlytsus/useful_rest_services/blob/master/MyMobileAPI_smsportal_REST_V1.wadl)
 
-* XSLT template to present struts xml in human readable format: [struts_2_xml_mapping.xslt](https://github.com/vlytsus/useful_rest_services/blob/master/struts_2_xml_mapping.xslt)
+* XSLT template to present struts xml in human readable format: [struts_2_xml_mapping.xslt](https://github.com/vlytsus/useful_rest_services/blob/master/struts_2_xml_mapping.xslt) (and sample_struts.xml to test xslt [sample_struts.xml](https://github.com/vlytsus/useful_rest_services/blob/master/sample_struts.xml))
