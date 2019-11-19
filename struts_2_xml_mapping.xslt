@@ -52,14 +52,25 @@
 							<td>
 								<span style="color:white">class</span>
 							</td>
+							<td>
+								<span style="color:white">result</span>
+							</td>
 						</tr>
-						<xsl:for-each select="action">
+						<xsl:for-each select="package/action">
 						  <tr>	
 							<td valign="top">
 								<b><xsl:value-of select="@name"/></b>
 							</td>
 							<td valign="top">
 								<b><xsl:value-of select="@class"/></b>
+							</td>							
+							<td>
+								<ul><xsl:for-each select="result">
+									<li>										
+										<b><xsl:value-of select="@name"/> : </b>
+										<xsl:value-of select="node()"/>
+									</li>
+								</xsl:for-each></ul>								
 							</td>
 						  </tr>
 						</xsl:for-each>
@@ -67,6 +78,5 @@
 				</table>
 			</body>
 		</html>
-	</xsl:template>
-	
+	</xsl:template>	
 </xsl:stylesheet>
